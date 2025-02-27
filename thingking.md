@@ -33,3 +33,4 @@
   - 支持release完成测试编译以及github的release文件上传
     - make release的过程中要提示用户输入tag，否则就带上snapshot参数，否则会提示错误：`error=git doesn't contain any tags. Either add a tag or use --snapshot`
     - 提交前避免出现`error=git is in a dirty state`这样的错误，就先检查一下，并且让用户确认是否把当前未提交的代码先commit再自动push提交，确保后续能够正确的推送github release包
+    - 提交前避免出现`error=git tag v0.0.1 was not made against commit a95e41ef507e852569a36bb2c5377b325a7e24a2`，就询问用户是否先删除tag再重新创建

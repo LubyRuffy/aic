@@ -28,6 +28,12 @@ clean:
 
 # 发布：运行测试、清理、使用goreleaser发布
 release: test clean
+	@if [ -z "$$GITHUB_TOKEN" ]; then \
+		echo "错误：未设置GITHUB_TOKEN环境变量"; \
+		echo "请设置GITHUB_TOKEN环境变量以访问GitHub API"; \
+		echo "示例：export GITHUB_TOKEN='your-token'"; \
+		exit 1; \
+	fi
 	@if [ -n "$$(git status --porcelain)" ]; then \
 		echo "警告：检测到以下未提交的更改："; \
 		git status --short; \
