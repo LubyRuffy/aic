@@ -84,11 +84,11 @@ release: test clean
 						| while read -r release_id; do \
 							curl -s -X DELETE -H "Authorization: token $$GITHUB_TOKEN" \
 								"https://api.github.com/repos/LubyRuffy/aic/releases/$$release_id"; \
-						done;
-					echo "正在重新创建标签..."; \
-					git tag $$latest_tag; \
-					git push origin $$latest_tag; \
-					echo "已重新创建标签 $$latest_tag"; \
+						done && \
+					echo "正在重新创建标签..." && \
+					git tag $$latest_tag && \
+					git push origin $$latest_tag && \
+					echo "已重新创建标签 $$latest_tag" && \
 					goreleaser release --clean; \
 				else \
 					echo "发布已取消"; \
