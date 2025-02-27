@@ -32,3 +32,4 @@
   - 支持test完成测试和覆盖度的输出
   - 支持release完成测试编译以及github的release文件上传
     - make release的过程中要提示用户输入tag，否则就带上snapshot参数，否则会提示错误：`error=git doesn't contain any tags. Either add a tag or use --snapshot`
+    - 提交前避免出现`error=git is in a dirty state`这样的错误，就先检查一下，并且让用户确认是否把当前未提交的代码先commit再自动push提交，确保后续能够正确的推送github release包
