@@ -80,14 +80,11 @@ release: test clean
 					echo "正在删除相关的draft releases..."; \
 					curl -s -H "Authorization: token $$GITHUB_TOKEN" \
 						"https://api.github.com/repos/LubyRuffy/aic/releases" \
-						| grep -B 1 "\"tag_name\": \"$$latest_tag\"" \
-						| grep '"id":' \
-						| cut -d ':' -f 2 \
-						| cut -d ',' -f 1 \
+						| jq -r ".[] | select(.tag_name == \"$$latest_tag\") | .id" \
 						| while read -r release_id; do \
 							curl -s -X DELETE -H "Authorization: token $$GITHUB_TOKEN" \
 								"https://api.github.com/repos/LubyRuffy/aic/releases/$$release_id"; \
-						done; \
+						done;
 					echo "正在重新创建标签..."; \
 					git tag $$latest_tag; \
 					git push origin $$latest_tag; \
