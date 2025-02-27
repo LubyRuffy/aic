@@ -74,8 +74,21 @@ release: test clean
 					echo "已创建新标签 $$new_tag"; \
 					goreleaser release --clean; \
 				elif [ "$$tag_action" = "r" ]; then \
+					echo "正在删除本地和远程标签..."; \
 					git tag -d $$latest_tag; \
 					git push origin :refs/tags/$$latest_tag; \
+					echo "正在删除相关的draft releases..."; \
+					curl -s -H "Authorization: token $$GITHUB_TOKEN" \
+						"https://api.github.com/repos/LubyRuffy/aic/releases" \
+						| grep -B 1 "\"tag_name\": \"$$latest_tag\"" \
+						| grep '"id":' \
+						| cut -d ':' -f 2 \
+						| cut -d ',' -f 1 \
+						| while read -r release_id; do \
+							curl -s -X DELETE -H "Authorization: token $$GITHUB_TOKEN" \
+								"https://api.github.com/repos/LubyRuffy/aic/releases/$$release_id"; \
+						done; \
+					echo "正在重新创建标签..."; \
 					git tag $$latest_tag; \
 					git push origin $$latest_tag; \
 					echo "已重新创建标签 $$latest_tag"; \
