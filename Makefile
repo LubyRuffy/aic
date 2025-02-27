@@ -60,30 +60,39 @@ release: test clean
 			goreleaser release --snapshot --clean; \
 		fi \
 	else \
-		latest_tag=$$(git describe --tags --abbrev=0); \
-		tag_commit=$$(git rev-list -n 1 $$latest_tag); \
-		head_commit=$$(git rev-parse HEAD); \
-		if [ "$$tag_commit" != "$$head_commit" ]; then \
-			echo "警告：最新标签 $$latest_tag 不是在当前commit上创建的"; \
-			read -p "是否创建新标签？(y/n/r - y:创建新标签, n:取消, r:重建当前标签): " tag_action; \
-			if [ "$$tag_action" = "y" ]; then \
-				read -p "请输入新标签 (例如 v1.0.0): " new_tag; \
-				git tag "$$new_tag"; \
-				git push origin "$$new_tag"; \
-				echo "已创建新标签 $$new_tag"; \
-				goreleaser release --clean; \
-			elif [ "$$tag_action" = "r" ]; then \
-				git tag -d $$latest_tag; \
-				git push origin :refs/tags/$$latest_tag; \
-				git tag $$latest_tag; \
-				git push origin $$latest_tag; \
-				echo "已重新创建标签 $$latest_tag"; \
-				goreleaser release --clean; \
+		if git describe --tags --abbrev=0 >/dev/null 2>&1; then \
+			latest_tag=$$(git describe --tags --abbrev=0); \
+			tag_commit=$$(git rev-list -n 1 $$latest_tag); \
+			head_commit=$$(git rev-parse HEAD); \
+			if [ "$$tag_commit" != "$$head_commit" ]; then \
+				echo "警告：最新标签 $$latest_tag 不是在当前commit上创建的"; \
+				read -p "是否创建新标签？(y/n/r - y:创建新标签, n:取消, r:重建当前标签): " tag_action; \
+				if [ "$$tag_action" = "y" ]; then \
+					read -p "请输入新标签 (例如 v1.0.0): " new_tag; \
+					git tag "$$new_tag"; \
+					git push origin "$$new_tag"; \
+					echo "已创建新标签 $$new_tag"; \
+					goreleaser release --clean; \
+				elif [ "$$tag_action" = "r" ]; then \
+					git tag -d $$latest_tag; \
+					git push origin :refs/tags/$$latest_tag; \
+					git tag $$latest_tag; \
+					git push origin $$latest_tag; \
+					echo "已重新创建标签 $$latest_tag"; \
+					goreleaser release --clean; \
+				else \
+					echo "发布已取消"; \
+					exit 1; \
+				fi \
 			else \
-				echo "发布已取消"; \
-				exit 1; \
+				goreleaser release --clean; \
 			fi \
 		else \
+			echo "当前仓库没有任何标签"; \
+			read -p "请输入新标签 (例如 v1.0.0): " new_tag; \
+			git tag "$$new_tag"; \
+			git push origin "$$new_tag"; \
+			echo "已创建新标签 $$new_tag"; \
 			goreleaser release --clean; \
 		fi \
 	fi
