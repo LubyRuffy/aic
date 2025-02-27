@@ -60,5 +60,22 @@ release: test clean
 			goreleaser release --snapshot --clean; \
 		fi \
 	else \
+		latest_tag=$$(git describe --tags --abbrev=0); \
+		tag_commit=$$(git rev-list -n 1 $$latest_tag); \
+		head_commit=$$(git rev-parse HEAD); \
+		if [ "$$tag_commit" != "$$head_commit" ]; then \
+			echo "警告：最新标签 $$latest_tag 不是在当前commit上创建的"; \
+			read -p "是否删除并重新创建标签？(y/n): " recreate_tag; \
+			if [ "$$recreate_tag" = "y" ]; then \
+				git tag -d $$latest_tag; \
+				git push origin :refs/tags/$$latest_tag; \
+				git tag $$latest_tag; \
+				git push origin $$latest_tag; \
+				echo "已重新创建标签 $$latest_tag"; \
+			else \
+				echo "发布已取消"; \
+				exit 1; \
+			fi \
+		fi; \
 		goreleaser release --clean; \
 	fi
