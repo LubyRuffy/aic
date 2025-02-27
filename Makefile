@@ -65,17 +65,25 @@ release: test clean
 		head_commit=$$(git rev-parse HEAD); \
 		if [ "$$tag_commit" != "$$head_commit" ]; then \
 			echo "警告：最新标签 $$latest_tag 不是在当前commit上创建的"; \
-			read -p "是否删除并重新创建标签？(y/n): " recreate_tag; \
-			if [ "$$recreate_tag" = "y" ]; then \
+			read -p "是否创建新标签？(y/n/r - y:创建新标签, n:取消, r:重建当前标签): " tag_action; \
+			if [ "$$tag_action" = "y" ]; then \
+				read -p "请输入新标签 (例如 v1.0.0): " new_tag; \
+				git tag "$$new_tag"; \
+				git push origin "$$new_tag"; \
+				echo "已创建新标签 $$new_tag"; \
+				goreleaser release --clean; \
+			elif [ "$$tag_action" = "r" ]; then \
 				git tag -d $$latest_tag; \
 				git push origin :refs/tags/$$latest_tag; \
 				git tag $$latest_tag; \
 				git push origin $$latest_tag; \
 				echo "已重新创建标签 $$latest_tag"; \
+				goreleaser release --clean; \
 			else \
 				echo "发布已取消"; \
 				exit 1; \
 			fi \
-		fi; \
-		goreleaser release --clean; \
+		else \
+			goreleaser release --clean; \
+		fi \
 	fi
