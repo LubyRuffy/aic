@@ -18,6 +18,10 @@ builds:
       - amd64
       - arm64
     binary: aic
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
+    flags:
+      - -trimpath
 
 archives:
   - format: tar.gz

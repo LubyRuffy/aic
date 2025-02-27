@@ -22,6 +22,7 @@
 - 支持调试模式`verbose`参数，可以打印ollama返回的实际命令行
 - 完善`README.md`文档，遵循知名开源项目的最佳实践，包括说明，Feature，安装，运行，以及各种徽章等
 - 支持goreleaser跨平台编译
+  - goreleaser在打包过程中必须要是编译出用于发布的最小化程序
 - 支持github action自动执行测试和编译
 - 支持vscode调试（.vscode/launch.json），配置文件中的参数为`-verbose hi`
 - 命令行的返回要美观大方，包括支持颜色，在错误的情况下用醒目的颜色输出
