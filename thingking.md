@@ -21,6 +21,8 @@
 - ollama的地址可以通过参数`ollama-url`指定，默认是`http://localhost:11434`
 - 支持调试模式`verbose`参数，可以打印ollama返回的实际命令行
 - 完善`README.md`文档，遵循知名开源项目的最佳实践，包括说明，Feature，安装，运行，以及各种徽章等
+  - 徽章要求质量必须是最好的，至少支持：
+    - https://goreportcard.com
 - 支持goreleaser跨平台编译
   - goreleaser在打包过程中必须要是编译出用于发布的最小化程序
 - 支持github action自动执行测试和编译

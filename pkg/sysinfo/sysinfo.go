@@ -11,12 +11,12 @@ import (
 
 // SystemInfo 包含系统环境的相关信息
 type SystemInfo struct {
-	OS          string
-	OSVersion   string
-	Shell       string
-	Username    string
-	HomeDir     string
-	CurrentDir  string
+	OS         string
+	OSVersion  string
+	Shell      string
+	Username   string
+	HomeDir    string
+	CurrentDir string
 }
 
 // GetSystemInfo 获取当前系统的环境信息
@@ -48,12 +48,12 @@ func GetSystemInfo() (*SystemInfo, error) {
 	}
 
 	return &SystemInfo{
-		OS:          runtime.GOOS,
-		OSVersion:   getOSVersion(),
-		Shell:       shell,
-		Username:    currentUser.Username,
-		HomeDir:     currentUser.HomeDir,
-		CurrentDir:  cwd,
+		OS:         runtime.GOOS,
+		OSVersion:  getOSVersion(),
+		Shell:      shell,
+		Username:   currentUser.Username,
+		HomeDir:    currentUser.HomeDir,
+		CurrentDir: cwd,
 	}, nil
 }
 
