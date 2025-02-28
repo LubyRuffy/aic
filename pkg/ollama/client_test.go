@@ -10,7 +10,7 @@ import (
 
 func TestNewClient(t *testing.T) {
 	baseURL := "http://localhost:11434"
-	client := NewClient(baseURL)
+	client := NewClient(baseURL, false)
 
 	if client.BaseURL != baseURL {
 		t.Errorf("Expected BaseURL %s, got %s", baseURL, client.BaseURL)
@@ -50,7 +50,7 @@ func TestGenerate(t *testing.T) {
 	defer server.Close()
 
 	// 使用测试服务器的URL创建客户端
-	client := NewClient(server.URL)
+	client := NewClient(server.URL, false)
 
 	// 测试Generate方法
 	response, err := client.Generate("test-model", "test prompt")
@@ -83,7 +83,7 @@ func TestGenerateError(t *testing.T) {
 				w.WriteHeader(http.StatusBadRequest)
 				json.NewEncoder(w).Encode(ErrorResponse{Error: "model not found"})
 			},
-			expectedErrStr: "Ollama service error: model not found",
+			expectedErrStr: "ollama service error: model not found",
 		},
 		{
 			name: "cannot generate command",
@@ -107,7 +107,7 @@ func TestGenerateError(t *testing.T) {
 			server := httptest.NewServer(http.HandlerFunc(tc.handler))
 			defer server.Close()
 
-			client := NewClient(server.URL)
+			client := NewClient(server.URL, false)
 			_, err := client.Generate("test-model", "test prompt")
 
 			if err == nil {
@@ -121,7 +121,7 @@ func TestGenerateError(t *testing.T) {
 
 func TestGenerateNetworkError(t *testing.T) {
 	// 测试网络连接错误
-	client := NewClient("http://invalid-url")
+	client := NewClient("http://invalid-url", false)
 	_, err := client.Generate("test-model", "test prompt")
 	if err == nil {
 		t.Error("Expected network error, got nil")

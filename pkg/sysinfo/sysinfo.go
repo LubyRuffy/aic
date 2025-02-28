@@ -17,6 +17,7 @@ type SystemInfo struct {
 	Username   string
 	HomeDir    string
 	CurrentDir string
+	EnvVars    map[string]string // 环境变量列表
 }
 
 // GetSystemInfo 获取当前系统的环境信息
@@ -47,6 +48,15 @@ func GetSystemInfo() (*SystemInfo, error) {
 		shell = filepath.Base(shell)
 	}
 
+	// 获取环境变量
+	envVars := make(map[string]string)
+	for _, env := range os.Environ() {
+		parts := strings.SplitN(env, "=", 2)
+		if len(parts) == 2 {
+			envVars[parts[0]] = parts[1]
+		}
+	}
+
 	return &SystemInfo{
 		OS:         runtime.GOOS,
 		OSVersion:  getOSVersion(),
@@ -54,6 +64,7 @@ func GetSystemInfo() (*SystemInfo, error) {
 		Username:   currentUser.Username,
 		HomeDir:    currentUser.HomeDir,
 		CurrentDir: cwd,
+		EnvVars:    envVars,
 	}, nil
 }
 
